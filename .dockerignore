@@ -1,0 +1,9 @@
+.git
+.gitignore
+.env
+data
+*.sqlite
+tmp-route-check.sqlite
+temp-smoke.sqlite
+node_modules
+dist

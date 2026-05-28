@@ -1,0 +1,30 @@
+services:
+  gestao-dev-unimed:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: gestao-rpa-imagem:latest
+    pull_policy: never
+    container_name: gestao-dev-unimed
+    ports:
+      - "5174:5174"
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=production
+      - PORT=5174
+      - DB_PATH=data/gestao_dev_unimed.sqlite
+      - DISPLAY=:99
+    volumes:
+      - ./:/app
+      - ./data:/app/data
+      # node_modules NÃO é montado como volume — os binários Linux
+      # ficam dentro da imagem (instalados pelo npm ci no Dockerfile).
+      # Um named volume protege o node_modules do container contra
+      # sobrescrita pelo volume ./:/app
+      - node_modules_container:/app/node_modules
+    restart: unless-stopped
+    shm_size: '2gb'
+
+volumes:
+  node_modules_container:

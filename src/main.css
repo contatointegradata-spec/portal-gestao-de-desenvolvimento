@@ -1,0 +1,76 @@
+@import url("https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700;900&family=Sora:wght@300;400;500;600;700&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+  --base-900: 7 73 49;
+  --base-800: 255 255 255;
+  --base-700: 239 248 242;
+  --ink-100: 11 106 68;
+  --ink-300: 29 157 99;
+  --ink-400: 94 150 116;
+  --accent-500: 0 171 84;
+  --accent-600: 0 143 71;
+  --background: radial-gradient(1200px 600px at 10% 8%, rgba(0, 171, 84, 0.12) 0%, rgba(0, 171, 84, 0.03) 30%, transparent 55%),
+    radial-gradient(800px 420px at 90% 0%, rgba(164, 214, 74, 0.16) 0%, rgba(164, 214, 74, 0.03) 32%, transparent 55%),
+    linear-gradient(180deg, #ffffff 0%, #f7fbf8 100%);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Sora", system-ui, -apple-system, sans-serif;
+  background: var(--background);
+  color: rgb(var(--ink-100));
+  min-height: 100vh;
+  text-rendering: optimizeLegibility;
+}
+
+#app {
+  min-height: 100vh;
+}
+
+h1,
+h2,
+h3 {
+  font-family: "Merriweather", Georgia, serif;
+  letter-spacing: -0.02em;
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: rgb(var(--ink-400));
+}
+
+.font-brand {
+  font-family: "Merriweather", Georgia, serif;
+}
+
+.border-white\/10 {
+  border-color: rgb(191 219 196 / 0.9) !important;
+}
+
+.bg-white\/10 {
+  background-color: rgb(236 253 245 / 1) !important;
+}
+
+.bg-white\/60 {
+  background-color: rgb(236 253 245 / 0.65) !important;
+}
+
+.bg-black\/60 {
+  background-color: rgb(4 120 87 / 0.18) !important;
+}
