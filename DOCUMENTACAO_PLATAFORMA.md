@@ -48,11 +48,22 @@ Mesmo modelo do Clinic Pro:
 
 **Configuracao (uma unica vez):**
 
-1. **Secrets do repositorio** (Settings › Secrets and variables › Actions) — os mesmos valores do Clinic Pro:
-   - `VPS_HOST`, `VPS_USER`, `VPS_SSH_KEY`
+1. **Chave SSH dedicada ao deploy** (o GitHub nao deixa ler secrets ja salvos, entao nao da para copiar os do Clinic Pro).
+   No terminal da VPS (hPanel da Hostinger › VPS › Terminal do navegador):
+
+   ```bash
+   ssh-keygen -t ed25519 -C "deploy-gestao-dev" -f ~/.ssh/gestao_dev_deploy -N ""
+   cat ~/.ssh/gestao_dev_deploy.pub >> ~/.ssh/authorized_keys && chmod 600 ~/.ssh/authorized_keys
+   whoami                       # -> VPS_USER
+   curl -4 -s ifconfig.me; echo # -> VPS_HOST
+   cat ~/.ssh/gestao_dev_deploy # -> VPS_SSH_KEY (copie tudo, inclusive as linhas BEGIN/END)
+   rm ~/.ssh/gestao_dev_deploy  # depois de salvar o secret; a autorizacao (.pub) continua valendo
+   ```
+2. **Secrets do repositorio** (Settings › Secrets and variables › Actions):
+   - `VPS_HOST`, `VPS_USER`, `VPS_SSH_KEY` (valores do passo anterior)
    - opcional `VPS_APP_DIR_GESTAO` (padrao `/opt/gestao-dev-integradata`). No primeiro deploy o repositorio e clonado nesse diretorio automaticamente.
-2. **`.env` na VPS** em `<VPS_APP_DIR_GESTAO>/.env` (ver `.env.example`): `MASTER_EMAIL`, `MASTER_PASSWORD`, `MAIL_*`, `APP_SECRET_KEY`, `FRONTEND_URL`, `RPA_LIVE_VIEW_URL`. O `.env` nunca e sobrescrito pelo deploy.
-3. **Dominio / nginx:** o nginx do Clinic Pro ja ocupa as portas 80/443 da VPS. Copie o bloco `deploy/nginx-gestao-dev.conf` para o `nginx.conf` do Clinic Pro (ajustando o `server_name`) e aponte o DNS do subdominio para a VPS. O container entra na rede `integradata_proxy` (`deploy/docker-compose.vps.yml`) e o nginx o alcanca por `gestao-dev-integradata`.
+3. **`.env` na VPS** em `<VPS_APP_DIR_GESTAO>/.env` (ver `.env.example`): `MASTER_EMAIL`, `MASTER_PASSWORD`, `MAIL_*`, `APP_SECRET_KEY`, `FRONTEND_URL`, `RPA_LIVE_VIEW_URL`. O `.env` nunca e sobrescrito pelo deploy.
+4. **Dominio / nginx:** o nginx do Clinic Pro ja ocupa as portas 80/443 da VPS. Copie o bloco `deploy/nginx-gestao-dev.conf` para o `nginx.conf` do Clinic Pro (ajustando o `server_name`) e aponte o DNS do subdominio para a VPS. O container entra na rede `integradata_proxy` (`deploy/docker-compose.vps.yml`) e o nginx o alcanca por `gestao-dev-integradata`.
 
 O endpoint `GET /api/health` devolve `release` com o commit publicado, para conferir a versao no ar.
 Deploy manual de emergencia (na VPS): `docker compose -f docker-compose.yml -f deploy/docker-compose.vps.yml pull && docker compose -f docker-compose.yml -f deploy/docker-compose.vps.yml up -d`.
