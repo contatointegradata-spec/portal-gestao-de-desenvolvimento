@@ -1,7 +1,7 @@
 /**
  * Consolida bancos legados em um banco novo, ja migrado para o schema atual.
  *
- *   node scripts/merge-legacy-data.mjs --base <banco-principal> [--extra <banco-complementar>] [--out data/gestao_dev_unimed.sqlite] [--force]
+ *   node scripts/merge-legacy-data.mjs --base <banco-principal> [--extra <banco-complementar>] [--out data/gestao_dev.sqlite] [--force]
  *
  * - base:  banco mais recente (usuarios, departamentos, sistemas, APIs).
  * - extra: banco complementar; sistemas que nao existem na base sao copiados
@@ -32,7 +32,7 @@ if (args[0] === "--migrate-only") {
 
 const base = getArg("--base");
 const extra = getArg("--extra");
-const out = path.resolve(root, getArg("--out") || "data/gestao_dev_unimed.sqlite");
+const out = path.resolve(root, getArg("--out") || "data/gestao_dev.sqlite");
 if (!base || !fs.existsSync(base)) {
   console.error("Informe --base com o caminho de um banco existente.");
   process.exit(1);

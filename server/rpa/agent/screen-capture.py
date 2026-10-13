@@ -1,5 +1,5 @@
 """
-Captura da tela do servidor de execucao — Gestao de Sistemas Unimed.
+Captura da tela do servidor de execucao — Gestao de Desenvolvimento - Integradata.
 
 Usado pelo agente (gestao-rpa-agent.cjs) para transmitir a area de trabalho do servidor
 para a plataforma, somente enquanto alguem esta assistindo. Processo persistente:

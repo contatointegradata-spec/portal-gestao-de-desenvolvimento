@@ -12,8 +12,7 @@ out/
 
 # SQLite databases & temp DB files
 data/
-gestao_dev_unimed
-gestao_dev_unimed.backup-*
+gestao_dev_*
 *.sqlite-shm
 *.gestao-secret.key
 __pycache__/

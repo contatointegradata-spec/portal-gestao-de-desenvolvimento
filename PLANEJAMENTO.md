@@ -275,7 +275,7 @@ Sistema interno para catalogar e gerenciar todos os projetos desenvolvidos, perm
 - Criada tabela `user_sessions` para controle de sessao:
   - `tokenHash`, `userId`, `createdAt`, `expiresAt`.
 - Seed de usuario padrao (somente quando nao houver usuario):
-  - `admin@unimed.local` / `admin123`.
+  - `admin@integradata.local` / `admin123`.
 
 ### Painel de configuracoes do usuario
 - Painel de configuracoes com:
@@ -310,4 +310,4 @@ Sistema interno para catalogar e gerenciar todos os projetos desenvolvidos, perm
 - Envio de email de boas-vindas automatico apos criacao da conta.
 
 
-- PS D:\desenvolvimentos_unimed\gestao_dev_unimed> scp -r "D:\desenvolvimentos_unimed\gestao_dev_unimed" kelven@192.168.177.77:/home/docker/ 
+- Deploy: automatico via GitHub Actions na VPS Hostinger (ver `DOCUMENTACAO_PLATAFORMA.md` › Deploy automatico).

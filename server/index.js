@@ -26,7 +26,8 @@ app.set("trust proxy", true);
 app.use(cors());
 app.use(express.json({ limit: "8mb" }));
 
-app.get("/api/health", (_req, res) => res.json({ ok: true, version: "2.0.0" }));
+// release = commit publicado pelo CI/CD (permite conferir na VPS qual versao esta no ar).
+app.get("/api/health", (_req, res) => res.json({ ok: true, version: "2.0.0", release: process.env.RELEASE_SHA || "development" }));
 app.get("/api/system/runtime", requireManager, (_req, res) => {
   res.json({ ...runtimeDiagnostics(), mailConfigured: isMailConfigured(), timezone: config.timezone, maxConcurrentRuns: config.rpa.maxConcurrent });
 });

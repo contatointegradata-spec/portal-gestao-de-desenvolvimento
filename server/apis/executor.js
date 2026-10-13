@@ -235,7 +235,7 @@ function resolveList(list, resolve) {
 }
 
 function buildMultipart(fields) {
-  const boundary = `----GestaoUnimed${crypto.randomBytes(12).toString("hex")}`;
+  const boundary = `----GestaoIntegradata${crypto.randomBytes(12).toString("hex")}`;
   const parts = fields.map((field) => Buffer.from(
     `--${boundary}\r\nContent-Disposition: form-data; name="${field.key.replace(/"/g, "%22")}"\r\n\r\n${field.value}\r\n`
   ));
@@ -367,7 +367,7 @@ export async function executeRequest({ request, auth, variables }) {
     }
   }
   if (body) setHeader(headers, "content-length", String(body.length));
-  if (!hasHeader(headers, "user-agent")) setHeader(headers, "user-agent", "GestaoUnimed-APIClient/2.0");
+  if (!hasHeader(headers, "user-agent")) setHeader(headers, "user-agent", "GestaoIntegradata-APIClient/2.0");
   if (!hasHeader(headers, "accept")) setHeader(headers, "accept", "*/*");
   if (!hasHeader(headers, "accept-encoding")) setHeader(headers, "accept-encoding", "gzip, deflate, br");
 

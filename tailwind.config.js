@@ -3,18 +3,33 @@ export default {
   theme: {
     extend: {
       colors: {
+        // Identidade Integradata: azul do simbolo (600) sobre o azul-marinho do fundo da logo (950).
         brand: {
-          50: "#ecfbf3",
-          100: "#d2f5e2",
-          200: "#a8eac8",
-          300: "#6fd8a6",
-          400: "#35bf80",
-          500: "#12a866",
-          600: "#00995d",
-          700: "#007a4b",
-          800: "#0a5f3e",
-          900: "#084d33",
-          950: "#032b1c"
+          50: "#eeefff",
+          100: "#e0e1ff",
+          200: "#c6c7ff",
+          300: "#a3a2fd",
+          400: "#7f7bf9",
+          500: "#5d56f6",
+          600: "#3e39f5",
+          700: "#2f28d8",
+          800: "#2620ae",
+          900: "#1a1683",
+          950: "#0a0849"
+        },
+        // Verde-limao do "DATA" e do contorno da logo — usado como destaque.
+        accent: {
+          50: "#f4fde8",
+          100: "#e6fbcd",
+          200: "#cdf6a1",
+          300: "#acee6a",
+          400: "#8ee03c",
+          500: "#6fcb16",
+          600: "#55a20d",
+          700: "#427b10",
+          800: "#376113",
+          900: "#2f5215",
+          950: "#162d05"
         }
       },
       fontFamily: {
@@ -23,8 +38,8 @@ export default {
         mono: ["JetBrains Mono", "ui-monospace", "SFMono-Regular", "Consolas", "monospace"]
       },
       boxShadow: {
-        soft: "0 10px 30px -12px rgba(3, 43, 28, 0.18)",
-        pop: "0 24px 60px -20px rgba(3, 43, 28, 0.35)"
+        soft: "0 10px 30px -12px rgba(10, 8, 73, 0.18)",
+        pop: "0 24px 60px -20px rgba(10, 8, 73, 0.35)"
       },
       keyframes: {
         "fade-in": { from: { opacity: "0" }, to: { opacity: "1" } },

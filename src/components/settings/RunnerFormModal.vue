@@ -76,7 +76,7 @@ async function save() {
       </div>
       <div>
         <label class="label">Usuario</label>
-        <input v-model="form.username" class="input font-mono" placeholder="unimedpatos\rpa.usuario" autocomplete="off" />
+        <input v-model="form.username" class="input font-mono" placeholder="dominio\rpa.usuario" autocomplete="off" />
       </div>
       <div>
         <label class="label">Senha <span class="font-normal text-slate-400">(opcional)</span></label>

@@ -1,0 +1,153 @@
+name: Deploy — Produção (VPS Hostinger)
+
+# Todo commit na main: testa, publica a imagem no ghcr.io e atualiza a VPS.
+on:
+  push:
+    branches: [main]
+  # Fallback manual (re-rodar um deploy sem precisar de um novo commit).
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-prod
+  cancel-in-progress: false
+
+env:
+  IMAGE: ghcr.io/${{ github.repository }}
+
+jobs:
+  test:
+    name: Testes & build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Testes (migracao + fumaca)
+        run: npm test
+
+      - name: Build frontend (Vite)
+        run: npm run build
+
+  build:
+    name: Build & Push da imagem
+    runs-on: ubuntu-latest
+    # Nada vai para a VPS se os testes falharem.
+    needs: test
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login no GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build & push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: Dockerfile
+          push: true
+          build-args: |
+            RELEASE_SHA=${{ github.sha }}
+          tags: |
+            ${{ env.IMAGE }}:${{ github.sha }}
+            ${{ env.IMAGE }}:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  deploy:
+    name: Deploy na VPS
+    runs-on: ubuntu-latest
+    needs: build
+    environment: production
+    permissions:
+      contents: read
+      packages: read
+    steps:
+      - name: SSH — pull da imagem e restart
+        uses: appleboy/ssh-action@v1.0.3
+        env:
+          RELEASE_SHA: ${{ github.sha }}
+          REPO_URL: https://github.com/${{ github.repository }}.git
+          APP_DIR: ${{ secrets.VPS_APP_DIR_GESTAO || '/opt/gestao-dev-integradata' }}
+          GHCR_USER: ${{ github.actor }}
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          envs: RELEASE_SHA,REPO_URL,APP_DIR,GHCR_USER,GHCR_TOKEN
+          script: |
+            set -e
+
+            # Primeiro deploy: clona o repositorio (so compose/configs sao usados; o codigo vem na imagem).
+            if [ ! -d "$APP_DIR/.git" ]; then
+              echo "==> Primeiro deploy: clonando em $APP_DIR..."
+              mkdir -p "$APP_DIR"
+              git clone "$REPO_URL" "$APP_DIR"
+            fi
+            cd "$APP_DIR"
+
+            echo "==> Sincronizando docker-compose.yml/configs..."
+            git fetch origin main
+            git reset --hard origin/main
+            mkdir -p data
+            touch .env
+
+            COMPOSE="docker compose -f docker-compose.yml"
+            if docker network inspect integradata_proxy >/dev/null 2>&1; then
+              COMPOSE="$COMPOSE -f deploy/docker-compose.vps.yml"
+            else
+              echo "Aviso: rede integradata_proxy nao encontrada; subindo sem o proxy compartilhado."
+            fi
+            export RELEASE_SHA
+
+            # Login temporario no ghcr.io, isolado: nao mexe no login docker ja existente
+            # na VPS (usado pelo deploy do Clinic Pro).
+            export DOCKER_CONFIG="$(mktemp -d)"
+            trap 'rm -rf "$DOCKER_CONFIG"' EXIT
+            echo "$GHCR_TOKEN" | docker login ghcr.io -u "$GHCR_USER" --password-stdin
+
+            echo "==> Baixando a imagem publicada ($RELEASE_SHA)..."
+            $COMPOSE pull
+            # Atualiza tambem o ":latest" local, para um "docker compose up -d" manual
+            # (sem RELEASE_SHA) nao voltar para uma versao antiga.
+            docker pull ghcr.io/contatointegradata-spec/portal-gestao-de-desenvolvimento:latest
+            docker logout ghcr.io >/dev/null 2>&1 || true
+
+            echo "==> Atualizando o container..."
+            $COMPOSE up -d --remove-orphans
+
+            echo "==> Aguardando a aplicacao ficar saudavel..."
+            for i in $(seq 1 40); do
+              STATUS="$(docker inspect --format='{{.State.Health.Status}}' gestao-dev-integradata 2>/dev/null || echo starting)"
+              [ "$STATUS" = "healthy" ] && break
+              sleep 3
+            done
+            if [ "$STATUS" != "healthy" ]; then
+              echo "HEALTH CHECK FAILED ($STATUS)"
+              $COMPOSE logs --tail=80
+              exit 1
+            fi
+
+            docker exec gestao-dev-integradata node -e "fetch('http://127.0.0.1:5174/api/health').then(r=>r.json()).then(j=>console.log('==> No ar:', JSON.stringify(j)))"
+            docker image prune -f >/dev/null 2>&1 || true
+            echo "==> Deploy concluido com sucesso!"

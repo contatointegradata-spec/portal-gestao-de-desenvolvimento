@@ -273,7 +273,7 @@ async function requestClose() {
         </div>
         <div>
           <label class="label">URL de acesso {{ isRpa ? "(opcional)" : "*" }}</label>
-          <input v-model="form.url" class="input" placeholder="https://sistema.unimedpatosdeminas.com.br" />
+          <input v-model="form.url" class="input" placeholder="https://sistema.empresa.com.br" />
         </div>
         <div>
           <label class="label">Repositorio</label>

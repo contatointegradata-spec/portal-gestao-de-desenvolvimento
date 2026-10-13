@@ -35,8 +35,11 @@ let timer = null;
 const isRunning = computed(() => status.value === "running");
 const liveViewUrl = computed(() => {
   if (!liveView.value) return "";
-  const base = liveView.value.url || `${window.location.protocol}//${window.location.hostname}:${liveView.value.port}`;
-  return `${base.replace(/\/+$/, "")}/vnc.html?autoconnect=true&view_only=true&resize=scale&reconnect=true&show_dot=true`;
+  const base = (liveView.value.url || `${window.location.protocol}//${window.location.hostname}:${liveView.value.port}`).replace(/\/+$/, "");
+  // Atras de proxy num subcaminho (ex.: https://dominio/live-view) o websocket do noVNC tambem fica nele.
+  const prefix = new URL(base, window.location.href).pathname.replace(/^\/+|\/+$/g, "");
+  const wsPath = prefix ? `&path=${encodeURIComponent(`${prefix}/websockify`)}` : "";
+  return `${base}/vnc.html?autoconnect=true&view_only=true&resize=scale&reconnect=true&show_dot=true${wsPath}`;
 });
 // Ao vivo: noVNC do Docker ou a tela do servidor remoto transmitida pelo agente.
 const hasLive = computed(() => isRunning.value && (Boolean(liveViewUrl.value) || Boolean(runnerId.value)));
