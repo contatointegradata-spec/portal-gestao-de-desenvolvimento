@@ -98,13 +98,15 @@ jobs:
           script: |
             set -e
 
-            # Primeiro deploy: clona o repositorio (so compose/configs sao usados; o codigo vem na imagem).
-            if [ ! -d "$APP_DIR/.git" ]; then
-              echo "==> Primeiro deploy: clonando em $APP_DIR..."
-              mkdir -p "$APP_DIR"
-              git clone "$REPO_URL" "$APP_DIR"
-            fi
+            # Primeiro deploy: prepara o repositorio (so compose/configs sao usados; o codigo vem na imagem).
+            # git init + remote (em vez de clone) funciona mesmo se o .env ja tiver sido criado na pasta.
+            mkdir -p "$APP_DIR"
             cd "$APP_DIR"
+            if [ ! -d .git ]; then
+              echo "==> Primeiro deploy: preparando $APP_DIR..."
+              git init -q
+              git remote add origin "$REPO_URL"
+            fi
 
             echo "==> Sincronizando docker-compose.yml/configs..."
             git fetch origin main
