@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node --check server/index.js)",
+      "Bash(node --check server/db.js)",
+      "Bash(grep -n \"Central de chamados\\\\|Nenhum chamado encontrado\\\\|^    </div>$\\\\|settingsOpen\" src/App.vue)",
+      "Bash(awk 'NR>=1686 && NR<=1993' src/App.vue)",
+      "Bash(awk '{ *)",
+      "Bash(npm run *)",
+      "Bash(rm -f /tmp/scratch_gestao.sqlite)",
+      "Bash(DB_PATH=/tmp/scratch_gestao.sqlite PORT=5199 node server/index.js)",
+      "Read(//tmp/**)",
+      "Bash(curl -s http://localhost:5199/api/health)",
+      "Bash(git stash *)",
+      "PowerShell(Get-CimInstance Win32_Process -Filter \"Name='node.exe'\")",
+      "PowerShell(Test-NetConnection -ComputerName localhost -Port 5174 -WarningAction SilentlyContinue -InformationLevel Quiet)",
+      "PowerShell(try { Invoke-RestMethod -Uri \"http://localhost:8003/api/health\" } catch { $_.Exception.Message })"
+    ]
+  }
+}

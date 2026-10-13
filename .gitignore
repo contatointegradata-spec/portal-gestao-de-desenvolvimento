@@ -11,7 +11,12 @@ obj/
 out/
 
 # SQLite databases & temp DB files
+data/
 gestao_dev_unimed
+gestao_dev_unimed.backup-*
+*.sqlite-shm
+*.gestao-secret.key
+__pycache__/
 *.db
 *.sqlite
 *.sqlite3
@@ -58,3 +63,7 @@ coverage/
 # OS files
 *.bak
 *.tmp
+
+# instant client
+instantclient-basic-linux.x64-23.26.2.0.0/
+

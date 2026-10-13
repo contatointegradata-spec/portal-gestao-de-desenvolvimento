@@ -308,3 +308,6 @@ Sistema interno para catalogar e gerenciar todos os projetos desenvolvidos, perm
 - Botao e formulario `Criar conta` na tela de login com campos: nome, email, senha e confirmar senha.
 - Endpoint `POST /api/auth/register` para cadastro de novos usuarios.
 - Envio de email de boas-vindas automatico apos criacao da conta.
+
+
+- PS D:\desenvolvimentos_unimed\gestao_dev_unimed> scp -r "D:\desenvolvimentos_unimed\gestao_dev_unimed" kelven@192.168.177.77:/home/docker/ 

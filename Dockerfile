@@ -13,9 +13,13 @@ ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
 ENV PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
 
 # ── Python3 + pip ──────────────────────────────────────────────────────────────
+# x11vnc + novnc: transmitem ao vivo a tela virtual (Xvfb) para a plataforma (porta 6080).
 RUN apt-get update && apt-get install -y --no-install-recommends \
     python3 \
     python3-pip \
+    x11vnc \
+    novnc \
+    websockify \
     && rm -rf /var/lib/apt/lists/*
 
 # ── Dependências Python ────────────────────────────────────────────────────────
@@ -32,8 +36,11 @@ RUN npm ci --omit=dev
 # ── Código da aplicação ────────────────────────────────────────────────────────
 COPY . .
 
-EXPOSE 5174
+EXPOSE 5174 6080
 
 # Xvfb inicia o display virtual — headless=False abre o Chromium nele.
+# O lock/socket do Xvfb sobrevive ao restart do container (/tmp persiste) e impede o
+# Xvfb de subir de novo; por isso sao removidos antes. Se o Xvfb cair, o runner o
+# reinicia sob demanda (server/rpa/display.js), assim como o x11vnc/noVNC da transmissao.
 # Os logs JSON do script são capturados pelo Node e exibidos na UI em tempo real.
-CMD ["bash", "-lc", "Xvfb :99 -screen 0 1920x1080x24 -nolisten tcp >/tmp/xvfb.log 2>&1 & sleep 1 && node server/index.js"]
+CMD ["bash", "-lc", "rm -f /tmp/.X99-lock /tmp/.X11-unix/X99; Xvfb :99 -screen 0 1366x900x24 -nolisten tcp >/tmp/xvfb.log 2>&1 & sleep 1 && exec node server/index.js"]
