@@ -1,0 +1,13 @@
+# Complemento usado somente na VPS da Hostinger:
+#   docker compose -f docker-compose.yml -f deploy/docker-compose.vps.yml up -d
+# Conecta o container a rede compartilhada "integradata_proxy" (a mesma do nginx do
+# Clinic Pro), para que o nginx alcance a aplicacao pelo nome "gestao-dev-integradata".
+services:
+  gestao-dev:
+    networks:
+      - default
+      - integradata_proxy
+
+networks:
+  integradata_proxy:
+    external: true

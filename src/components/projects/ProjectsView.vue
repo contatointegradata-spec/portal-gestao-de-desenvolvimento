@@ -236,7 +236,7 @@ onMounted(load);
         <p class="section-title">Gestao de desenvolvimento</p>
         <h1 class="page-title mt-1">{{ typeFilter === "rpa" ? "Automacoes RPA" : "Sistemas e automacoes" }}</h1>
         <p class="mt-1 text-sm text-slate-500">
-          {{ typeFilter === "rpa" ? "Robos em Python ou JavaScript com execucao ao vivo, arquivos de entrada e agendamento." : "Catalogo das aplicacoes da cooperativa e dos robos RPA." }}
+          {{ typeFilter === "rpa" ? "Robos em Python ou JavaScript com execucao ao vivo, arquivos de entrada e agendamento." : "Catalogo das aplicacoes da empresa e dos robos RPA." }}
         </p>
       </div>
       <div class="flex gap-2">

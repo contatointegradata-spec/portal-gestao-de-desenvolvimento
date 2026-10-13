@@ -25,7 +25,15 @@ function envInt(name, fallback) {
   return Number.isFinite(parsed) ? parsed : fallback;
 }
 
-const dbPath = path.resolve(ROOT_DIR, env("DB_PATH", "data/gestao_dev_unimed.sqlite"));
+// Instalacoes antigas usavam "gestao_dev_unimed.sqlite": se ele existir e o novo ainda nao, continua sendo usado.
+const DEFAULT_DB = "data/gestao_dev.sqlite";
+const LEGACY_DB = "data/gestao_dev_unimed.sqlite";
+function defaultDbPath() {
+  const current = path.resolve(ROOT_DIR, DEFAULT_DB);
+  const legacy = path.resolve(ROOT_DIR, LEGACY_DB);
+  return !fs.existsSync(current) && fs.existsSync(legacy) ? legacy : current;
+}
+const dbPath = env("DB_PATH", "") ? path.resolve(ROOT_DIR, env("DB_PATH", "")) : defaultDbPath();
 
 export const config = {
   port: envInt("PORT", 5174),
@@ -38,7 +46,7 @@ export const config = {
   sessionDurationDays: envInt("SESSION_DURATION_DAYS", 7),
   secretKey: env("APP_SECRET_KEY", ""),
   master: {
-    email: env("MASTER_EMAIL", "kelvensilva.unimed@gmail.com").toLowerCase(),
+    email: env("MASTER_EMAIL", "admin@integradata.local").toLowerCase(),
     name: env("MASTER_NAME", "Kelven Silva"),
     // Usada somente quando o usuario master ainda nao existe no banco.
     password: env("MASTER_PASSWORD", "")

@@ -92,7 +92,7 @@ async function remove() {
       <div>
         <label class="label">Tipo de API</label>
         <div class="grid gap-2 sm:grid-cols-2">
-          <button v-for="option in [{ id: 'internal', label: 'Interna', description: 'Sistemas da cooperativa / rede interna', icon: 'server' }, { id: 'external', label: 'Externa', description: 'Fornecedores e servicos de terceiros', icon: 'globe' }]" :key="option.id" type="button" class="flex items-start gap-3 rounded-xl border p-3 text-left" :class="form.scope === option.id ? 'border-brand-500 bg-brand-50/60 ring-1 ring-brand-500' : 'border-slate-200 hover:border-slate-300'" :disabled="!isManager" @click="form.scope = option.id">
+          <button v-for="option in [{ id: 'internal', label: 'Interna', description: 'Sistemas internos / rede interna', icon: 'server' }, { id: 'external', label: 'Externa', description: 'Fornecedores e servicos de terceiros', icon: 'globe' }]" :key="option.id" type="button" class="flex items-start gap-3 rounded-xl border p-3 text-left" :class="form.scope === option.id ? 'border-brand-500 bg-brand-50/60 ring-1 ring-brand-500' : 'border-slate-200 hover:border-slate-300'" :disabled="!isManager" @click="form.scope = option.id">
             <Icon :name="option.icon" :size="18" class="mt-0.5 text-slate-500" />
             <span><span class="block text-sm font-semibold text-slate-800">{{ option.label }}</span><span class="text-xs text-slate-500">{{ option.description }}</span></span>
           </button>

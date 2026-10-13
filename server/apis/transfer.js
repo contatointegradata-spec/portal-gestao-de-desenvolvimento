@@ -460,7 +460,7 @@ export function exportPostman({ collection, folders, requests, environments }) {
   return {
     info: {
       name: collection.name,
-      description: `${collection.description || ""}\n\nExportado da plataforma Gestao Unimed. Segredos (senhas, tokens e client secrets) nao sao exportados.`.trim(),
+      description: `${collection.description || ""}\n\nExportado da plataforma Gestao de Desenvolvimento - Integradata. Segredos (senhas, tokens e client secrets) nao sao exportados.`.trim(),
       schema: "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
     },
     item: buildLevel(null),

@@ -4,7 +4,7 @@ import { http } from "../../lib/api.js";
 import { toast } from "../../lib/feedback.js";
 import { login } from "../../stores/session.js";
 import Icon from "../ui/Icon.vue";
-import logoUrl from "../../assets/favicon_unimed.webp";
+import logoUrl from "../../assets/integradata-logo.webp";
 
 const LAST_EMAIL_KEY = "gestao_last_email";
 
@@ -109,20 +109,20 @@ async function resetPassword() {
   <div class="grid min-h-screen lg:grid-cols-[1.1fr_1fr]">
     <section class="relative hidden overflow-hidden bg-gradient-to-br from-brand-950 via-brand-900 to-brand-700 p-12 text-white lg:flex lg:flex-col lg:justify-between">
       <div class="absolute -right-24 -top-24 h-96 w-96 rounded-full bg-brand-500/20 blur-3xl" />
-      <div class="absolute -bottom-32 -left-16 h-96 w-96 rounded-full bg-lime-400/10 blur-3xl" />
+      <div class="absolute -bottom-32 -left-16 h-96 w-96 rounded-full bg-accent-400/15 blur-3xl" />
       <div class="relative flex items-center gap-3">
-        <img :src="logoUrl" alt="Unimed" class="h-10 w-10 rounded-xl bg-white p-1" />
+        <img :src="logoUrl" alt="Integradata" class="h-12 w-12 rounded-full ring-1 ring-accent-400/50" />
         <div>
-          <p class="text-xs uppercase tracking-[0.3em] text-brand-200">Unimed Patos de Minas</p>
-          <p class="font-semibold">Gestao de Sistemas</p>
+          <p class="text-xs uppercase tracking-[0.3em] text-accent-400">Integradata</p>
+          <p class="font-semibold">Gestão de Desenvolvimento</p>
         </div>
       </div>
       <div class="relative max-w-lg">
         <h1 class="font-brand text-4xl font-black leading-tight">Desenvolvimento, automacoes e integracoes em um so lugar.</h1>
         <ul class="mt-8 space-y-4 text-brand-100">
-          <li class="flex items-start gap-3"><Icon name="layout-grid" class="mt-0.5 text-brand-300" />Catalogo e gestao das aplicacoes da cooperativa.</li>
-          <li class="flex items-start gap-3"><Icon name="bot" class="mt-0.5 text-brand-300" />Robos RPA em Python ou JavaScript com execucao ao vivo e agendamento.</li>
-          <li class="flex items-start gap-3"><Icon name="plug" class="mt-0.5 text-brand-300" />Cliente de APIs internas e externas com credenciais protegidas.</li>
+          <li class="flex items-start gap-3"><Icon name="layout-grid" class="mt-0.5 text-accent-400" />Catalogo e gestao das aplicacoes da empresa.</li>
+          <li class="flex items-start gap-3"><Icon name="bot" class="mt-0.5 text-accent-400" />Robos RPA em Python ou JavaScript com execucao ao vivo e agendamento.</li>
+          <li class="flex items-start gap-3"><Icon name="plug" class="mt-0.5 text-accent-400" />Cliente de APIs internas e externas com credenciais protegidas.</li>
         </ul>
       </div>
       <p class="relative text-xs text-brand-200/70">Acesso restrito a colaboradores autorizados.</p>
@@ -131,8 +131,8 @@ async function resetPassword() {
     <section class="flex items-center justify-center px-4 py-10 sm:px-8">
       <div class="w-full max-w-sm">
         <div class="mb-8 flex items-center gap-3 lg:hidden">
-          <img :src="logoUrl" alt="Unimed" class="h-10 w-10 rounded-xl border border-slate-200 bg-white p-1" />
-          <p class="font-semibold text-slate-800">Gestao de Sistemas · Unimed</p>
+          <img :src="logoUrl" alt="Integradata" class="h-10 w-10 rounded-full" />
+          <p class="font-semibold text-slate-800">Gestão de Desenvolvimento · Integradata</p>
         </div>
 
         <form v-if="mode === 'login'" class="space-y-4" @submit.prevent="submitLogin">
@@ -142,7 +142,7 @@ async function resetPassword() {
           </div>
           <div>
             <label class="label" for="email">Email</label>
-            <input id="email" v-model="form.email" type="email" class="input" autocomplete="username" placeholder="nome@unimedpatosdeminas.com.br" autofocus />
+            <input id="email" v-model="form.email" type="email" class="input" autocomplete="username" placeholder="nome@empresa.com.br" autofocus />
           </div>
           <div>
             <label class="label" for="password">Senha</label>

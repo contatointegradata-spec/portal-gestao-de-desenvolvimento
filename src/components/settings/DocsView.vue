@@ -99,7 +99,7 @@ function scrollTo(id) {
       <article class="prose-docs space-y-12 text-sm leading-relaxed text-slate-700">
         <section id="visao-geral" class="scroll-mt-6">
           <h2>Visao geral</h2>
-          <p>A plataforma reune tres frentes do time de desenvolvimento da Unimed Patos de Minas:</p>
+          <p>A plataforma reune tres frentes do time de desenvolvimento (produto Integradata):</p>
           <div class="mt-4 grid gap-3 sm:grid-cols-3">
             <div class="rounded-xl border border-slate-200 p-4"><Icon name="layout-grid" class="text-brand-600" /><p class="mt-2 font-semibold text-slate-900">Gestao de desenvolvimento</p><p class="text-xs text-slate-500">Catalogo das aplicacoes com responsavel, departamento, status, tecnologias e links.</p></div>
             <div class="rounded-xl border border-slate-200 p-4"><Icon name="bot" class="text-brand-600" /><p class="mt-2 font-semibold text-slate-900">Automacoes RPA</p><p class="text-xs text-slate-500">Robos em Python ou JavaScript com execucao ao vivo, arquivos, agendamento e historico.</p></div>

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /*
- * Agente de execucao de RPA — Gestao de Sistemas Unimed.
+ * Agente de execucao de RPA — Gestao de Desenvolvimento - Integradata.
  *
  * Roda no servidor de execucao (ex.: Windows acessado por RDP), na sessao do usuario logado,
  * para que o navegador do robo abra VISIVEL na area de trabalho. Nao recebe conexoes: consulta

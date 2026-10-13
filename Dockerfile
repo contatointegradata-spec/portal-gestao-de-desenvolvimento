@@ -1,3 +1,15 @@
+# ── 1) Build do frontend (Vite) ────────────────────────────────────────────────
+FROM node:22-bookworm-slim AS web
+
+WORKDIR /build
+COPY package.json package-lock.json ./
+# --ignore-scripts: o build do front nao precisa compilar o sqlite3 nativo.
+RUN npm ci --ignore-scripts
+COPY index.html vite.config.js tailwind.config.js postcss.config.js ./
+COPY src ./src
+RUN npm run build
+
+# ── 2) Runtime (Node + Python + Playwright + display virtual) ─────────────────
 FROM mcr.microsoft.com/playwright:v1.59.1-jammy
 
 WORKDIR /app
@@ -33,10 +45,18 @@ RUN pip3 install --no-index --find-links=/tmp/wheelhouse_linux pandas openpyxl \
 COPY package.json package-lock.json ./
 RUN npm ci --omit=dev
 
-# ── Código da aplicação ────────────────────────────────────────────────────────
+# ── Código da aplicação + frontend compilado ──────────────────────────────────
 COPY . .
+COPY --from=web /build/dist ./dist
+
+# Commit publicado (exibido em /api/health).
+ARG RELEASE_SHA=development
+ENV RELEASE_SHA=${RELEASE_SHA}
 
 EXPOSE 5174 6080
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=40s --retries=3 \
+  CMD node -e "fetch('http://127.0.0.1:'+(process.env.PORT||5174)+'/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
 
 # Xvfb inicia o display virtual — headless=False abre o Chromium nele.
 # O lock/socket do Xvfb sobrevive ao restart do container (/tmp persiste) e impede o

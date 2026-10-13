@@ -1,6 +1,6 @@
-# Gestao de Sistemas Unimed — Documentacao tecnica (v2.0)
+# Gestão de Desenvolvimento - Integradata — Documentacao tecnica (v2.0)
 
-Plataforma interna com tres modulos:
+Produto **Integradata**, com tres modulos:
 
 | Modulo | O que faz |
 | --- | --- |
@@ -29,9 +29,33 @@ Requisitos: Node 20+, Python 3 com `pandas`, `openpyxl` e `playwright` (para RPA
 
 ### Docker
 
-`docker compose up -d --build` — a imagem instala Python/Playwright, sobe o Xvfb (navegador visivel virtual) e a API.
-O volume `./:/app` monta o codigo; o banco fica em `data/` (`DB_PATH=data/gestao_dev_unimed.sqlite`).
-Rode `npm run build` no host antes de subir para atualizar o frontend.
+`docker compose up -d --build` — a imagem compila o frontend (Vite), instala Python/Playwright, sobe o Xvfb (navegador visivel virtual) e a API.
+O banco e a chave de criptografia ficam em `data/` (volume `./data:/app/data`, `DB_PATH=data/gestao_dev.sqlite`).
+As portas sao publicadas em `127.0.0.1` por padrao; defina `APP_BIND=0.0.0.0` no `.env` para expor direto na rede.
+
+> Instalacoes antigas: se `data/gestao_dev_unimed.sqlite` existir e `data/gestao_dev.sqlite` nao, o servidor continua usando o arquivo antigo automaticamente (ou renomeie-o).
+
+---
+
+## Deploy automatico (CI/CD → VPS Hostinger)
+
+Mesmo modelo do Clinic Pro:
+
+| Workflow | Quando | O que faz |
+| --- | --- | --- |
+| `.github/workflows/ci.yml` | Pull requests e pushes fora da `main` | `npm ci`, `npm test`, `npm run build`. |
+| `.github/workflows/deploy.yml` | Todo push na `main` (ou manual) | Testa → publica a imagem em `ghcr.io/contatointegradata-spec/portal-gestao-de-desenvolvimento` (`:<sha>` e `:latest`) → entra na VPS via SSH, faz `git reset --hard origin/main`, `docker compose pull` e `up -d`, e aguarda o healthcheck. |
+
+**Configuracao (uma unica vez):**
+
+1. **Secrets do repositorio** (Settings › Secrets and variables › Actions) — os mesmos valores do Clinic Pro:
+   - `VPS_HOST`, `VPS_USER`, `VPS_SSH_KEY`
+   - opcional `VPS_APP_DIR_GESTAO` (padrao `/opt/gestao-dev-integradata`). No primeiro deploy o repositorio e clonado nesse diretorio automaticamente.
+2. **`.env` na VPS** em `<VPS_APP_DIR_GESTAO>/.env` (ver `.env.example`): `MASTER_EMAIL`, `MASTER_PASSWORD`, `MAIL_*`, `APP_SECRET_KEY`, `FRONTEND_URL`, `RPA_LIVE_VIEW_URL`. O `.env` nunca e sobrescrito pelo deploy.
+3. **Dominio / nginx:** o nginx do Clinic Pro ja ocupa as portas 80/443 da VPS. Copie o bloco `deploy/nginx-gestao-dev.conf` para o `nginx.conf` do Clinic Pro (ajustando o `server_name`) e aponte o DNS do subdominio para a VPS. O container entra na rede `integradata_proxy` (`deploy/docker-compose.vps.yml`) e o nginx o alcanca por `gestao-dev-integradata`.
+
+O endpoint `GET /api/health` devolve `release` com o commit publicado, para conferir a versao no ar.
+Deploy manual de emergencia (na VPS): `docker compose -f docker-compose.yml -f deploy/docker-compose.vps.yml pull && docker compose -f docker-compose.yml -f deploy/docker-compose.vps.yml up -d`.
 
 ---
 
@@ -42,7 +66,7 @@ Veja `.env.example`. Principais:
 | Variavel | Uso |
 | --- | --- |
 | `MAIL_USER`, `MAIL_APP_PASSWORD`, `MAIL_FROM` | Envio do codigo de recuperacao de senha (Gmail). |
-| `DB_PATH` | Caminho do SQLite (padrao `data/gestao_dev_unimed.sqlite`). |
+| `DB_PATH` | Caminho do SQLite (padrao `data/gestao_dev.sqlite`). |
 | `APP_SECRET_KEY` | Chave de criptografia das credenciais de API. Sem ela, o servidor gera `data/.gestao-secret.key`. **Faca backup junto com o banco** — sem a chave, os segredos salvos nao podem ser lidos. |
 | `MASTER_EMAIL`, `MASTER_NAME`, `MASTER_PASSWORD` | Usuario master. So cria se nao existir; **nunca redefine a senha** de um master existente. Sem `MASTER_PASSWORD`, uma senha temporaria e exibida no log na criacao. |
 | `APP_TIMEZONE` | Fuso do agendador (padrao `America/Sao_Paulo`). |
@@ -99,10 +123,10 @@ scripts/
 - Consolidacao usada na v2.0 (a partir dos bancos antigos da raiz):
 
 ```bash
-npm run db:merge-legacy -- --base gestao_dev_unimed.backup-pre-tickets-removal-20260923165235 --extra gestao_dev_unimed
+npm run db:merge-legacy -- --base <backup-do-banco-principal> --extra <banco-complementar>
 ```
 
-  O backup de 23/09 foi a base (dados mais recentes); os RPAs de teste do banco de abril foram trazidos com planilhas e historico. Os arquivos originais nao sao alterados.
+  O banco base fornece os dados mais recentes; RPAs do banco complementar sao trazidos com planilhas e historico. Os arquivos originais nao sao alterados.
 
 ---
 
@@ -119,6 +143,6 @@ npm run db:merge-legacy -- --base gestao_dev_unimed.backup-pre-tickets-removal-2
 
 ## Operacao e seguranca
 
-- **Backup:** copie `data/gestao_dev_unimed.sqlite` **e** `data/.gestao-secret.key` (ou guarde o `APP_SECRET_KEY`).
+- **Backup:** copie `data/gestao_dev.sqlite` **e** `data/.gestao-secret.key` (ou guarde o `APP_SECRET_KEY`).
 - **Senha de app do Gmail:** ela ficou versionada no historico do git (versao anterior de `server/index.js`). Gere uma nova senha de app no Google, revogue a antiga e atualize o `.env`.
 - Diagnostico do ambiente RPA (Python, bibliotecas, fuso, email): **Configuracoes › Documentacao › Ambiente de execucao** (Admin/Super Admin) ou `GET /api/system/runtime`.

@@ -30,7 +30,7 @@ const menu = computed(() => {
     :class="running ? 'ring-2 ring-sky-300' : ''"
     @click="emit('open', project)"
   >
-    <div class="relative h-32 overflow-hidden bg-gradient-to-br" :class="isRpa ? 'from-slate-800 to-brand-900' : 'from-brand-50 to-emerald-100'">
+    <div class="relative h-32 overflow-hidden bg-gradient-to-br" :class="isRpa ? 'from-slate-800 to-brand-900' : 'from-brand-50 to-accent-100'">
       <img v-if="project.screenshot" :src="project.screenshot" :alt="project.nome" class="h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]" loading="lazy" />
       <div v-else class="flex h-full items-center justify-center">
         <Icon :name="isRpa ? 'bot' : 'layout-grid'" :size="40" :class="isRpa ? 'text-brand-300/60' : 'text-brand-600/30'" />

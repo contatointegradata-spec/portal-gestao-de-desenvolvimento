@@ -22,7 +22,7 @@ export async function sendResetCodeEmail({ to, name, code }) {
   const mailer = getTransporter();
   if (!mailer) throw new Error("Envio de email nao configurado (MAIL_USER / MAIL_APP_PASSWORD).");
   await mailer.sendMail({
-    from: `"Gestao Unimed" <${config.mail.from || config.mail.user}>`,
+    from: `"Gestao de Desenvolvimento - Integradata" <${config.mail.from || config.mail.user}>`,
     to,
     subject: `Codigo de recuperacao: ${code}`,
     text: [
@@ -35,7 +35,7 @@ export async function sendResetCodeEmail({ to, name, code }) {
       "Este codigo e valido por 10 minutos e pode ser usado uma unica vez.",
       "Se voce nao solicitou a troca de senha, ignore este email.",
       "",
-      "Equipe Gestao Unimed"
+      "Equipe Integradata"
     ].join("\n")
   });
 }

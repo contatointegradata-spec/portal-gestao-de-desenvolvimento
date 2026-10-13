@@ -35,7 +35,7 @@ function languageExtension(language) {
 const lightTheme = EditorView.theme({
   "&": { backgroundColor: "#ffffff" },
   ".cm-gutters": { backgroundColor: "#f8fafc", color: "#94a3b8", borderRight: "1px solid #e2e8f0" },
-  ".cm-activeLineGutter": { backgroundColor: "#ecfbf3" },
+  ".cm-activeLineGutter": { backgroundColor: "#eeefff" },
   ".cm-activeLine": { backgroundColor: "#f8fafc" }
 });
 

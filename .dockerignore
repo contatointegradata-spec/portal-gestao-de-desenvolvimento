@@ -7,3 +7,7 @@ tmp-route-check.sqlite
 temp-smoke.sqlite
 node_modules
 dist
+.github
+.claude
+deploy
+get-pip.py

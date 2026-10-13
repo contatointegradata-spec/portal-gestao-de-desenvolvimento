@@ -7,7 +7,7 @@ import { isManager, logout, session } from "../../stores/session.js";
 import Avatar from "../ui/Avatar.vue";
 import Icon from "../ui/Icon.vue";
 import NotificationsPanel from "./NotificationsPanel.vue";
-import logoUrl from "../../assets/favicon_unimed.webp";
+import logoUrl from "../../assets/integradata-logo.webp";
 
 const props = defineProps({
   collapsed: { type: Boolean, default: false },
@@ -72,7 +72,7 @@ async function confirmLogout() {
 
 const itemBase = "group relative flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition";
 function itemClass(active) {
-  return active ? "bg-white/15 text-white shadow-inner" : "text-brand-100/80 hover:bg-white/10 hover:text-white";
+  return active ? "bg-white/15 text-white shadow-inner before:absolute before:inset-y-2 before:left-0 before:w-1 before:rounded-full before:bg-accent-400" : "text-brand-100/80 hover:bg-white/10 hover:text-white";
 }
 </script>
 
@@ -85,10 +85,10 @@ function itemClass(active) {
   >
     <!-- Marca + recolher -->
     <div class="flex items-center gap-3 px-4 pb-4 pt-5" :class="compact ? 'flex-col' : ''">
-      <img :src="logoUrl" alt="Unimed" class="h-10 w-10 shrink-0 rounded-xl bg-white p-1" />
+      <img :src="logoUrl" alt="Integradata" class="h-10 w-10 shrink-0 rounded-full ring-1 ring-accent-400/40" />
       <div v-if="!compact" class="min-w-0 flex-1">
-        <p class="text-[10px] font-semibold uppercase tracking-[0.3em] text-brand-300">Unimed</p>
-        <p class="truncate text-sm font-semibold">Gestao de Sistemas</p>
+        <p class="text-[10px] font-semibold uppercase tracking-[0.3em] text-accent-400">Integradata</p>
+        <p class="text-sm font-semibold leading-tight">Gestão de Desenvolvimento</p>
       </div>
       <button
         type="button"
